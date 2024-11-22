@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "clingo-assign"
+version = "0.1.0"
+description = ""
+authors = ["wilfred11 <wilfredvancasteren@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+clingo = "^5.7.1"
+pandas = "^2.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
