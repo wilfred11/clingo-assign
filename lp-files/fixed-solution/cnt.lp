@@ -25,3 +25,4 @@ check_complete(F1) :- at(priority_number(F,_),X), at(priority_number(F1,T),Y), X
 
 %#show at/2.
 %#show priority_number/2.
+#show at/2.

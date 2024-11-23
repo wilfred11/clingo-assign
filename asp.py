@@ -31,6 +31,7 @@ def generate_priority_counts():
     control.load("lp-files/fixed-solution/gen-priority-counts.lp")
     control.load("lp-files/priorities/col-priorities.lp")
     control.load("lp-files/generated/solution/columns.lp")
+    control.add('#show priority_count/2.#show priority_number/2.')
     control.ground([("base", [])])
     control.configuration.solve.models = 0
 
@@ -58,6 +59,39 @@ def generate_column_combinations():
 
     for model in control.solve(yield_=True):
         f = open("lp-files/generated/solution/col-comb-"+str(count)+".lp", "w")
+        #facts = set()
+        for atom in model.symbols(shown=True):
+            #print(str(atom))
+            #facts.add(atom)
+            f.write(str(atom) + ".\n")
+        f.close()
+        count= count+1
+
+    """for atom in facts:
+        f.write(str(atom)+".\n")"""
+    f.close()
+
+    #control1 = clingo.Control()
+    #control1.add(m)
+    #print(control.solve(on_model=print))
+
+    for model in control.solve(yield_=True):
+        sorted_model = [str(atom) for atom in model.symbols(shown=True)]
+        sorted_model.sort()
+        print("Answer set: {{{}}}".format(", ".join(sorted_model)))
+
+
+def generate_length_permutations():
+    control = clingo.Control()
+    control.add("base", [], "")
+    control.load("lp-files/fixed-solution/cnt.lp")
+    control.load("lp-files/priorities/generated/priority-counts.lp")
+    control.ground([("base", [])])
+    control.configuration.solve.models = 0
+    count = 1
+
+    for model in control.solve(yield_=True):
+        f = open("lp-files/generated/solution/length-perm-"+str(count)+".lp", "w")
         #facts = set()
         for atom in model.symbols(shown=True):
             #print(str(atom))
