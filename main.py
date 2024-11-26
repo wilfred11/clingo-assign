@@ -1,10 +1,10 @@
 import clingo
 
 from asp import print_answer_sets, print_answer_sets1, generate_column_combinations, check_k_anon_comb, \
-    generate_priority_counts, generate_length_permutations
+    generate_priority_counts, generate_priority_distribution, generate_k_anonym_data, generate_csv_from_asp
 from query import read_data, check, quasi_identifiers, create_initial_lp_data, quasi_identifiers1, create_string_data
 
-do = 5
+do = 6
 random_state = 10
 
 if do==1:
@@ -29,7 +29,7 @@ if do==11:
 
 if do == 2:
     print("creating initial lp files")
-    data = read_data("datainfo.csv", random_state, 2000)
+    data = read_data("datainfo.csv", random_state, 100)
     check(data, quasi_identifiers1())
     create_initial_lp_data(data, quasi_identifiers1())
     #instance = create_string_data(data, quasi_identifiers1())
@@ -42,7 +42,9 @@ if do == 4:
     generate_column_combinations()
 
 if do == 5:
-    generate_length_permutations()
+    generate_priority_distribution()
 
 if do == 6:
-    check_k_anon_comb()
+    generate_k_anonym_data()
+if do == 7:
+    generate_csv_from_asp()

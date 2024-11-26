@@ -7,6 +7,9 @@ def quasi_identifiers():
 def quasi_identifiers1():
     return ["sex", "married_status", "job","religion"]
 
+def num_col_data():
+    return len(quasi_identifiers())
+
 def check(df, columns):
     df = df[columns]
     print("length:", len(df))
@@ -42,8 +45,25 @@ def create_initial_lp_data(df, columns):
         for val in d[col]:
             f.write(col+"("+val + ").")
             f.write("\n")
+        f.write(col+"(na).")
+        f.write("\n")
+    f.write("val(na).\n")
     f.close()
     print("data.lp generated")
+
+    f = open("lp-files/generated/solution/get-item.lp", "w")
+    f.write("person_(X):- person(X), X=id.\n")
+    f.write("p_sex__(X, Y):- p_sex_(X, Y), X=id.\n")
+    f.write("p_maried_status__(X, Y):- p_married_status_(X, Y), X=id.\n")
+    f.write("p_religion__(X, Y):- p_religion_(X, Y), X=id.\n")
+    f.write("p_job__(X, Y):- p_job_(X, Y), X=id.\n")
+    f.write("#show p_sex__/2.\n")
+    f.write("#show p_job__/2.\n")
+    f.write("#show p_religion__/2.\n")
+    f.write("#show p_married_status__/2.\n")
+    f.close()
+    print("get-item.lp generated.")
+
 
 
 def create_string_data(df, columns):

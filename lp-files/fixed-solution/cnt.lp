@@ -7,7 +7,8 @@ priority_count(1,1).
 priority_count(2,2).
 priority_count(3,1).
 
-{at(priority_number(S,T), 1..4): priority_number(S,T)} 4.
+4 {at(priority_number(S,T), 1..4): priority_number(S,T)} 4.
+%{at(priority_number(S,T), 1..4): priority_number(S,T)} 4.
 :- at(priority_number(S,T),X), at(priority_number(S,T),Y), X!=Y.
 :- at(priority_number(S,T),X), at(priority_number(S,T+1),Y), Y-X!=1.
 :- at(priority_number(S,_),X), at(priority_number(S1,_),X), S!=S1.
