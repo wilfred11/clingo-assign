@@ -40,7 +40,8 @@ def create_initial_lp_data(df, columns):
             f.write("p_"+ col+"("+str(ind)+"," + col_value +").")
             f.write("\n")
             d[col].add(col_value)
-
+    print("data.lp generated")
+    f = open("lp-files/generated/solution/values.lp", "w")
     for col in df.columns:
         for val in d[col]:
             f.write(col+"("+val + ").")
@@ -49,14 +50,14 @@ def create_initial_lp_data(df, columns):
         f.write("\n")
     f.write("val(na).\n")
     f.close()
-    print("data.lp generated")
+    print("values.lp generated")
 
     f = open("lp-files/generated/solution/get-item.lp", "w")
-    f.write("person_(X):- person(X), X=id.\n")
-    f.write("p_sex__(X, Y):- p_sex_(X, Y), X=id.\n")
-    f.write("p_maried_status__(X, Y):- p_married_status_(X, Y), X=id.\n")
-    f.write("p_religion__(X, Y):- p_religion_(X, Y), X=id.\n")
-    f.write("p_job__(X, Y):- p_job_(X, Y), X=id.\n")
+    f.write("person_(X) :- person(X), X=id.\n")
+    f.write("p_sex__(X, Y) :- p_sex_(X, Y), X=id.\n")
+    f.write("p_maried_status__(X, Y) :- p_married_status_(X, Y), X=id.\n")
+    f.write("p_religion__(X, Y) :- p_religion_(X, Y), X=id.\n")
+    f.write("p_job__(X, Y) :- p_job_(X, Y), X=id.\n")
     f.write("#show p_sex__/2.\n")
     f.write("#show p_job__/2.\n")
     f.write("#show p_religion__/2.\n")
@@ -64,6 +65,29 @@ def create_initial_lp_data(df, columns):
     f.close()
     print("get-item.lp generated.")
 
+    f = open("lp-files/generated/solution/col-specific-hide.lp", "w")
+    tmp=""
+    tmp1=""
+    tmp2=""
+    count =0
+    for col in df.columns:
+        f.write("p_"+ col + "_(X,na) :- p_"+ col + "(X,_), hide_column("+col+",_).")
+        f.write("\n")
+        f.write("p_" + col + "_(X,Y) :- p_" + col + "(X,Y), not hide_column(" + col + ",_).")
+        f.write("\n")
+        tmp+= col + "(X"+ str(count) +"),"
+        tmp1+="X"+str(count)+","
+        tmp2+= "p_"+ col + "_(X,X" +str(count)+"),"
+        count=count+1
+    tmp1=tmp1[:-1]
+    tmp= tmp[:-1]
+    tmp2 = tmp2[:-1]
+    f.write("count_ext("+tmp1+",N) :-" + tmp +",N=#count{X: "+tmp2+"}.\n")
+    f.write("count_ext_(" + tmp1 + ",N) :- " + "count_ext("+tmp1+",N), N!=0.\n")
+    f.write("sum_test(N1) :- N1=#sum{N," + tmp1+" : count_ext("+tmp1+",N)}.\n")
+    f.write("min(N1) :- N1=#min{N:count_ext_("+tmp1+",N)}.\n")
+    f.close()
+    print("col-specific-hide.lp generated.")
 
 
 def create_string_data(df, columns):

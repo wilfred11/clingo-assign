@@ -86,7 +86,7 @@ def generate_column_combinations():
 
 
 def generate_k_anonym_data():
-    control = clingo.Control(["--opt-mode=optN", "-c", "k=7"])
+    control = clingo.Control(["--opt-mode=optN", "-c", "k=4"])
     control.add("base", [], "")
     control.load("lp-files/generated/data/data.lp")
     control.load("lp-files/generated/solution/col-combs.lp")
@@ -102,7 +102,10 @@ def generate_k_anonym_data():
 
     control.load("lp-files/generated/solution/columns.lp")
     control.load("lp-files/generated/solution/priority-distr.lp")
-    control.load("lp-files/generated/solution/enc.lp")
+    #control.load("lp-files/generated/solution/enc.lp")
+    control.load("lp-files/fixed-solution/gen-asp-data-files.lp")
+    control.load("lp-files/generated/solution/col-specific-hide.lp")
+    control.load("lp-files/generated/solution/values.lp")
     control.ground([("base", [])])
     control.configuration.solve.models = 0
     count = 1
@@ -121,7 +124,7 @@ def generate_csv_from_asp():
     #control = clingo.Control(["-c", "id=7"])
     control = clingo.Control()
     control.add("base", [], "")
-    control.load("lp-files/generated/data/data.lp")
+    control.load("lp-files/generated/data-to-be-exported/data-3.lp")
     control.add("#show person/1.")
     control.ground([("base", [])])
     control.configuration.solve.models = 0
@@ -131,19 +134,26 @@ def generate_csv_from_asp():
 
 
     print(atom.arguments[0])
+    f = open("lp-files/generated/data-to-be-exported/data-3.csv", "w")
     for i in ids:
         arg = "id=" + str(i)
         #print(arg)
         control1 = clingo.Control(["-c", arg])
         control1.load("lp-files/generated/data-to-be-exported/data-3.lp")
         control1.load("lp-files/generated/solution/get-item.lp")
+        control1.load("lp-files/generated/solution/values.lp")
         control1.ground([("base", [])])
         control1.configuration.solve.models = 0
+        f.write(str(i))
+        f.write(";")
         for model in control1.solve(yield_=True):
             for atom in model.symbols(shown=True):
-                print(str(atom))
+                f.write(str(atom.arguments[1]))
+                f.write(";")
+                #print(str(atom))
                 #print(str(atom) + ".\n")
-
+            f.write("\n")
+    f.close()
 
 def generate_priority_distribution():
     control = clingo.Control()
