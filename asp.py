@@ -33,6 +33,7 @@ def generate_priority_counts():
     control.add("base", [], "")
     control.load("lp-files/fixed-solution/gen-priority-counts.lp")
     control.load("lp-files/priorities/col-priorities.lp")
+    control.load("lp-files/fixed-solution/count-cols-priorities.lp")
     control.load("lp-files/generated/solution/columns.lp")
     control.add('#show priority_count/2.#show priority_number/2.')
     control.ground([("base", [])])
@@ -43,7 +44,6 @@ def generate_priority_counts():
     for model in control.solve(yield_=True):
         for atom in model.symbols(shown=True):
             priority_counts.add(atom)
-            #f.write(str(atom) + ".\n")
 
     for pc in priority_counts:
         f.write(str(str(pc)) + ".\n")
@@ -55,6 +55,7 @@ def generate_column_combinations():
     control.add("base", [], "")
     control.load("lp-files/fixed-solution/gen-priority-counts.lp")
     control.load("lp-files/fixed-solution/gen-column-combinations.lp")
+    control.load("lp-files/fixed-solution/count-cols-priorities.lp")
     control.load("lp-files/priorities/col-priorities.lp")
     control.load("lp-files/generated/solution/columns.lp")
     control.ground([("base", [])])
@@ -90,6 +91,7 @@ def generate_k_anonym_data():
     control.add("base", [], "")
     control.load("lp-files/generated/data/data.lp")
     control.load("lp-files/generated/solution/col-combs.lp")
+
     del_c_str = ""
     for h in range(1, num_col_data() - 2):
         if h != num_col_data():
@@ -102,7 +104,6 @@ def generate_k_anonym_data():
 
     control.load("lp-files/generated/solution/columns.lp")
     control.load("lp-files/generated/solution/priority-distr.lp")
-    #control.load("lp-files/generated/solution/enc.lp")
     control.load("lp-files/fixed-solution/gen-asp-data-files.lp")
     control.load("lp-files/generated/solution/col-specific-hide.lp")
     control.load("lp-files/generated/solution/values.lp")
@@ -155,10 +156,12 @@ def generate_csv_from_asp():
             f.write("\n")
     f.close()
 
-def generate_priority_distribution():
+def add_count_priority():
     control = clingo.Control()
     control.add("base", [], "")
-    control.load("lp-files/fixed-solution/cnt.lp")
+    control.load("lp-files/fixed-solution/add-count-priority-numbers.lp")
+    control.load("lp-files/priorities/col-priorities.lp")
+    control.load("lp-files/fixed-solution/count-cols-priorities.lp")
     control.load("lp-files/priorities/generated/priority-counts.lp")
     control.ground([("base", [])])
     control.configuration.solve.models = 0

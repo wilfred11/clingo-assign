@@ -1,13 +1,5 @@
-priority_number(1,1).
-priority_number(2,1).
-priority_number(2,2).
-priority_number(3,1).
-
-priority_count(1,1).
-priority_count(2,2).
-priority_count(3,1).
-
-4 {at(priority_number(S,T), 1..4): priority_number(S,T)} 4.
+NUM_C {at(priority_number(S,T), 1..4): priority_number(S,T)} NUM_C :- num_c(NUM_C).
+%4 {at(priority_number(S,T), 1..4): priority_number(S,T)} 4.
 %{at(priority_number(S,T), 1..4): priority_number(S,T)} 4.
 :- at(priority_number(S,T),X), at(priority_number(S,T),Y), X!=Y.
 :- at(priority_number(S,T),X), at(priority_number(S,T+1),Y), Y-X!=1.
@@ -24,6 +16,4 @@ priority_count(3,1).
 check_complete(F1) :- at(priority_number(F,_),X), at(priority_number(F1,T),Y), X>Y,F>F1.
 :- check_complete(F1), priority_count(F1,C), M =#max{T:at(priority_number(F1,T),Y)}, C!=M.
 
-%#show at/2.
-%#show priority_number/2.
 #show at/2.

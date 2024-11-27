@@ -1,7 +1,7 @@
 import clingo
 
 from asp import print_answer_sets, print_answer_sets1, generate_column_combinations, check_k_anon_comb, \
-    generate_priority_counts, generate_priority_distribution, generate_k_anonym_data, generate_csv_from_asp
+    generate_priority_counts, add_count_priority, generate_k_anonym_data, generate_csv_from_asp
 from query import read_data, check, quasi_identifiers, create_initial_lp_data, quasi_identifiers1, create_string_data
 
 do = 6
@@ -42,7 +42,7 @@ if do == 4:
     generate_column_combinations()
 
 if do == 5:
-    generate_priority_distribution()
+    add_count_priority()
 
 if do == 6:
     generate_k_anonym_data()
