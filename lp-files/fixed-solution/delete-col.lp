@@ -1,5 +1,3 @@
-%#const del_c=2.
-%#const comb=1.
 #const k=2.
 
 del_c(1)|del_c(2)|del_c(3).

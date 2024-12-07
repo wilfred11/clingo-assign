@@ -1,5 +1,6 @@
-NUM_C {del_adv(X, S, K)  : del(X,S), priority_count(S,C), K=1..C} NUM_C :- num_c(NUM_C).
-:- del_adv(X1,S1,T1), del_adv(X,S,T), column(X), column(X1), X1=X,S=S, T1!=T.
-:- del_adv(X1,S1,T1), del_adv(X,S,T), column(X), column(X1), X1!=X,S1=S, T1=T.
+NUM_C {col_priority(X, S, K)  : priority(X,S), priority_count(S,C), K=1..C} NUM_C :- num_c(NUM_C).
+:- col_priority(X1,S1,T1), col_priority(X,S,T), column(X), column(X1), X1=X,S=S, T1!=T.
+:- col_priority(X1,S1,T1), col_priority(X,S,T), column(X), column(X1), X1!=X,S1=S, T1=T.
 
-#show del_adv/3.
+
+#show col_priority/3.

@@ -1,9 +1,9 @@
 queue(priority_number(X,Y),CN) :-  at(priority_number(X,Y),CN),  CN<=S, del_c(S).
-del_adv1(C,X,Y,N) :- queue(priority_number(X1,Y1),CN), comb(del_adv(C,X,Y),N), comb(V), N=V, column(C), X=X1, Y=Y1.
+col_priority_comb(C,X,Y,V) :- queue(priority_number(X1,Y1),CN), comb(col_priority(C,X,Y),V), comb(V), column(C), X=X1, Y=Y1.
 
-count_combinations(COMB):- COMB= #count{Y:comb(X,Y)}.
+%count_combinations(COMB):- COMB= #count{Y:comb(X,Y)}.
 
-hide_column(C,N) :- del_adv1(C,X,Y,N), comb(N).
+hide_column(C,N) :- col_priority_comb(C,X,Y,N), comb(N).
 
 :- k>N1, min(N1).
 

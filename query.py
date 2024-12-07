@@ -40,6 +40,7 @@ def create_initial_lp_data(df, columns):
             f.write("p_"+ col+"("+str(ind)+"," + col_value +").")
             f.write("\n")
             d[col].add(col_value)
+    f.close()
     print("data.lp generated")
     f = open("lp-files/generated/solution/values.lp", "w")
     for col in df.columns:

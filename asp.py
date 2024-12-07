@@ -1,37 +1,31 @@
 import clingo
 
 from query import num_col_data
+from clingo.symbol import Function, Number, parse_term
 
 
-def print_answer_sets(program):
-    control = clingo.Control()
-    control.add("base", [], program)
-    control.ground([("base", [])])
-    control.configuration.solve.models = 0
-    for model in control.solve(yield_=True):
-        sorted_model = [str(atom) for atom in model.symbols(shown=True)]
-        sorted_model.sort()
-        print("Answer set: {{{}}}".format(", ".join(sorted_model)))
 
+import sys
+from clingo.application import Application, clingo_main
 
-def print_answer_sets1():
-    control = clingo.Control()
-    control.add("base", ["-c", "k=3"], "")
-    control.load("lp-files/generated/data/data.lp")
-    #control.load("data/enc1.lp")
-    control.ground([("base", [])])
-    control.configuration.solve.models = 0
-    for model in control.solve(yield_=True):
-        sorted_model = [str(atom) for atom in model.symbols(shown=True)]
-        sorted_model.sort()
-        print("Answer set: {{{}}}".format(", ".join(sorted_model)))
+class ClingoApp(Application):
+    def __init__(self, name):
+        self.program_name = name
+
+    def main(self, ctl, files):
+        for f in files:
+            ctl.load(f)
+        if not files:
+            ctl.load("-")
+        ctl.ground([("base", [])])
+        ctl.solve()
 
 
 def generate_priority_counts():
     count = 0
     control = clingo.Control()
     control.add("base", [], "")
-    control.load("lp-files/fixed-solution/gen-priority-counts.lp")
+    control.load("lp-files/fixed-solution/gen-priority-counts-numbers.lp")
     control.load("lp-files/priorities/col-priorities.lp")
     control.load("lp-files/fixed-solution/count-cols-priorities.lp")
     control.load("lp-files/generated/solution/columns.lp")
@@ -40,20 +34,21 @@ def generate_priority_counts():
     control.configuration.solve.models = 0
 
     f = open("lp-files/priorities/generated/priority-counts.lp", "w")
-    priority_counts = set()
     for model in control.solve(yield_=True):
         for atom in model.symbols(shown=True):
-            priority_counts.add(atom)
+            f.write(str(atom) + ".\n")
 
-    for pc in priority_counts:
-        f.write(str(str(pc)) + ".\n")
     f.close()
 
-
+def on_model(m):
+    m.context.add_clause([(Function("comb_id", [Number(1)]), False)])
 def generate_column_combinations():
     control = clingo.Control()
+
+
     control.add("base", [], "")
-    control.load("lp-files/fixed-solution/gen-priority-counts.lp")
+    #control.load("lp-files/fixed-solution/gen-priority-counts-numbers.lp")
+    control.load("lp-files/priorities/generated/priority-counts.lp")
     control.load("lp-files/fixed-solution/gen-column-combinations.lp")
     control.load("lp-files/fixed-solution/count-cols-priorities.lp")
     control.load("lp-files/priorities/col-priorities.lp")
@@ -65,11 +60,25 @@ def generate_column_combinations():
     f = open("lp-files/generated/solution/col-combs.lp", "w")
     comb_str = ""
 
-    for model in control.solve(yield_=True):
-        for atom in model.symbols(shown=True):
-            f.write("comb(" + str(atom) + "," + str(count) + ").\n")
-        count = count + 1
-    print(count)
+    with (control.solve(yield_=True) as handle):
+        for model in handle:
+            control_model = clingo.Control(["-c", "comb_n="+str(model.number)])
+            control_model.add("base", [], "")
+            #control_model.load("lp-files/generated/solution/columns.lp")
+            #control_model.add("comb(col_priority(X1,S,T),comb_n) :- col_priority(X1,S,T), column(X1).")
+            control_model.add("comb(col_priority(X1,S,T),comb_n) :- col_priority(X1,S,T).")
+            control_model.add("#show comb/2.")
+            for atom in model.symbols(shown=True):
+                control_model.add(str(atom)+".")
+
+            control_model.ground([("base", [])])
+            control_model.configuration.solve.models = 0
+            with control_model.solve(yield_=True) as modelhandle:
+                for model1 in modelhandle:
+                    for atom in model1.symbols(shown=True):
+                        f.write(str(atom)+".\n")
+            count=count+1
+
     for y in range(1, count):
         comb_str += "comb(" + str(y) + ")"
         if y +1== count:
@@ -78,13 +87,6 @@ def generate_column_combinations():
             comb_str += "|"
     f.write(comb_str)
     f.close()
-
-    """for model in control.solve(yield_=True):
-        sorted_model = [str(atom) for atom in model.symbols(shown=True)]
-        sorted_model.sort()
-        print("Answer set: {{{}}}".format(", ".join(sorted_model)))"""
-    return count
-
 
 def generate_k_anonym_data():
     control = clingo.Control(["--opt-mode=optN", "-c", "k=4"])
@@ -122,7 +124,6 @@ def generate_k_anonym_data():
 
 def generate_csv_from_asp():
     ids=[]
-    #control = clingo.Control(["-c", "id=7"])
     control = clingo.Control()
     control.add("base", [], "")
     control.load("lp-files/generated/data-to-be-exported/data-3.lp")
@@ -133,12 +134,9 @@ def generate_csv_from_asp():
         for atom in model.symbols(shown=True):
             ids.append(atom.arguments[0])
 
-
-    print(atom.arguments[0])
     f = open("lp-files/generated/data-to-be-exported/data-3.csv", "w")
     for i in ids:
         arg = "id=" + str(i)
-        #print(arg)
         control1 = clingo.Control(["-c", arg])
         control1.load("lp-files/generated/data-to-be-exported/data-3.lp")
         control1.load("lp-files/generated/solution/get-item.lp")
@@ -151,8 +149,6 @@ def generate_csv_from_asp():
             for atom in model.symbols(shown=True):
                 f.write(str(atom.arguments[1]))
                 f.write(";")
-                #print(str(atom))
-                #print(str(atom) + ".\n")
             f.write("\n")
     f.close()
 
