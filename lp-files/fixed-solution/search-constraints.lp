@@ -1,4 +1,4 @@
-queue(priority_number(X,Y),CN) :-  at(priority_number(X,Y),CN),  CN<=S, del_c(S).
+queue(priority_number(X,Y),CN) :-  deletion_rank(priority_number(X,Y),CN),  CN<=S, del_c(S).
 col_priority_comb(C,X,Y,V) :- queue(priority_number(X1,Y1),CN), comb(col_priority(C,X,Y),V), comb(V), column(C), X=X1, Y=Y1.
 
 %count_combinations(COMB):- COMB= #count{Y:comb(X,Y)}.
