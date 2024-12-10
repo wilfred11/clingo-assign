@@ -4,7 +4,7 @@ from asp import generate_column_combinations, \
     generate_priority_counts, add_deletion_rank, generate_k_anonym_data, generate_csv_from_asp
 from query import read_data, check, quasi_identifiers, create_initial_lp_data, quasi_identifiers1, create_string_data
 
-do = 4
+do = 7
 random_state = 10
 
 

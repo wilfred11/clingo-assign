@@ -102,7 +102,7 @@ def generate_csv_from_asp():
     ids = []
     control = clingo.Control()
     control.add("base", [], "")
-    control.load("lp-files/generated/data-to-be-exported/data-3.lp")
+    control.load("lp-files/generated/data-to-be-exported/data-4.lp")
     control.add("#show person/1.")
     control.ground([("base", [])])
     control.configuration.solve.models = 0
@@ -110,18 +110,18 @@ def generate_csv_from_asp():
         for atom in model.symbols(shown=True):
             ids.append(atom.arguments[0])
 
-    f = open("lp-files/generated/data-to-be-exported/data-3.csv", "w")
+    f = open("lp-files/generated/data-to-be-exported/data-4.csv", "w")
     for i in ids:
         arg = "id=" + str(i)
-        control1 = clingo.Control(["-c", arg])
-        control1.load("lp-files/generated/data-to-be-exported/data-3.lp")
-        control1.load("lp-files/generated/solution/get-item.lp")
-        control1.load("lp-files/generated/solution/values.lp")
-        control1.ground([("base", [])])
-        control1.configuration.solve.models = 0
+        item_control = clingo.Control(["-c", arg])
+        item_control.load("lp-files/generated/data-to-be-exported/data-4.lp")
+        item_control.load("lp-files/generated/solution/get-item.lp")
+        item_control.load("lp-files/generated/solution/values.lp")
+        item_control.ground([("base", [])])
+        item_control.configuration.solve.models = 0
         f.write(str(i))
         f.write(";")
-        for model in control1.solve(yield_=True):
+        for model in item_control.solve(yield_=True):
             for atom in model.symbols(shown=True):
                 f.write(str(atom.arguments[1]))
                 f.write(";")
