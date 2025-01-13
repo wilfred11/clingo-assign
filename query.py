@@ -12,10 +12,11 @@ def num_col_data():
 
 def check(df, columns):
     df = df[columns]
+
     print("length:", len(df))
     print(df.head())
     aggreg_query = df.groupby(columns).size().reset_index().rename(columns={0: 'count'})
-    #print(aggreg_query.loc[aggreg_query['count'] > 1])
+    print(aggreg_query)
     print(aggreg_query['count'].value_counts())
 
 def create_initial_lp_data(df, columns):
@@ -30,6 +31,7 @@ def create_initial_lp_data(df, columns):
         f.write("\n")
     f.close()
     print("columns.lp generated")
+
     f = open("lp-files/generated/data/data.lp", "w")
     for ind in df.index:
         f.write("person("+str(ind)+").")
@@ -42,6 +44,7 @@ def create_initial_lp_data(df, columns):
             d[col].add(col_value)
     f.close()
     print("data.lp generated")
+
     f = open("lp-files/generated/solution/values.lp", "w")
     for col in df.columns:
         for val in d[col]:
@@ -56,7 +59,7 @@ def create_initial_lp_data(df, columns):
     f = open("lp-files/generated/solution/get-item.lp", "w")
     f.write("person_(X) :- person(X), X=id.\n")
     f.write("p_sex__(X, Y) :- p_sex_(X, Y), X=id.\n")
-    f.write("p_maried_status__(X, Y) :- p_married_status_(X, Y), X=id.\n")
+    f.write("p_married_status__(X, Y) :- p_married_status_(X, Y), X=id.\n")
     f.write("p_religion__(X, Y) :- p_religion_(X, Y), X=id.\n")
     f.write("p_job__(X, Y) :- p_job_(X, Y), X=id.\n")
     f.write("#show p_sex__/2.\n")
