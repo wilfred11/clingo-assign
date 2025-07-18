@@ -1,4 +1,4 @@
-This project finds the columns to delete for achieving k-anonimity (for some k). 
+This project finds the columns to delete for achieving k-anonimity (for some k).
 Steps to reach k-anonymity are defined in main.py. Every step must be executed on its own.
 By changing a value for the do-variable set in main.py. Somewhere a column deletion priority needs to be set, by the user.
 
@@ -10,6 +10,8 @@ To this end, clingo (answer set programming) is being used.
 
 
 In principle, it should be usable with any csv-file having column names
-, even though column names should at least have no spacing in between words. I haven't really
+, even though column names should at least have no spacing in between words. I haven't really tested it.
+
+This [pdf](https://github.com/wilfred11/clingo-assign/blob/master/model-AI-2-wvc.pdf) contains a description.
 
 This project was created to complete an assignment at the Open University Nederland.
